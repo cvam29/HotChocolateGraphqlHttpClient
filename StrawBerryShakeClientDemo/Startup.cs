@@ -1,14 +1,4 @@
-﻿using Microsoft.Azure.Functions.Extensions.DependencyInjection;
-using Microsoft.Azure.WebJobs.Host.Bindings;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-using StrawBerryShakeClientDemo;
-using StrawBerryShakeClientDemo.Models;
-using StrawBerryShakeClientDemo.Services;
-using System;
-
-[assembly: FunctionsStartup(typeof(Startup))]
+﻿[assembly: FunctionsStartup(typeof(Startup))]
 namespace StrawBerryShakeClientDemo;
 public class Startup : FunctionsStartup
 {

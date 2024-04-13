@@ -1,8 +1,4 @@
-﻿using HotChocolate.Transport.Http;
-using System.Threading;
-using System.Threading.Tasks;
-
-namespace StrawBerryShakeClientDemo.Services;
+﻿namespace StrawBerryShakeClientDemo.Services;
 public interface IHotChocolateClientFactory
 {
 	GraphQLHttpClient CreateClient();

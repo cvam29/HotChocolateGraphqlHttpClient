@@ -1,43 +1,35 @@
-﻿using HotChocolate.Transport.Http;
-using HotChocolate.Transport;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Threading.Tasks;
-
-namespace StrawBerryShakeClientDemo.Extensions;
-internal static class HotChocolateExtension
+﻿namespace StrawBerryShakeClientDemo.Extensions;
+public static class HotChocolateExtension
 {
-	public static async Task<OperationResult> ExecuteGraphQLQuery<T>(this GraphQLHttpClient _gqlClient, string query, object variables)
-	{
-		try
-		{
-			var variable = ToReadOnlyDictionary(variables);
-			var operation = new OperationRequest(query, variables: variable);
-			var request = new GraphQLHttpRequest(operation);
+    public static async Task<GraphQLResponse<T>> SendQueryAsync<T>(this GraphQLHttpClient _gqlClient,GraphQL.GraphQLRequest req)
+    {
+        try
+        {
+            var variable = ToReadOnlyDictionary(req.Variables);
+            var operation = new OperationRequest(req.Query, variables: variable);
+            var request = new GraphQLHttpRequest(operation);
 
-			var response = await _gqlClient.SendAsync(request);
-			var result = await response.ReadAsResultAsync();
-			var jsonData = result.Data.ToString();
+            var response = await _gqlClient.SendAsync(request);
+            var operationResult = await response.ReadAsResultAsync();
 
-			if (!string.IsNullOrWhiteSpace(jsonData))
-			{
-				return result;
-			}
-			else
-			{
-				return default; // Return default value of type T if response data is null
-			}
-		}
-		catch (Exception ex)
-		{
-			// Log or handle the exception as needed
-			Console.WriteLine($"Exception: {ex.Message}");
-			return default; // Return default value of type T on exception
-		}
-	}
-	public static IReadOnlyDictionary<string, object> ToReadOnlyDictionary(object obj)
+            if (operationResult != null)
+            {
+                return operationResult.ToGraphQLResponse<T>();
+            }
+            else
+            {
+                return default; // Return default value of type T if response data is null
+            }
+        }
+        catch (Exception ex)
+        {
+            // Log or handle the exception as needed
+            Console.WriteLine($"Exception: {ex.Message}");
+            return default; // Return default value of type T on exception
+        }
+    }
+
+    public static IReadOnlyDictionary<string, object> ToReadOnlyDictionary(object obj)
 	{
 		if (obj == null)
 		{
@@ -57,5 +49,22 @@ internal static class HotChocolateExtension
 
 		return dictionary;
 	}
+
+    public static GraphQLResponse<T> ToGraphQLResponse<T>(this OperationResult operationResult)
+    {
+        // Assuming that the Data property in OperationResult can be deserialized to the type T
+        T data = JsonConvert.DeserializeObject<T>(operationResult.Data.GetRawText());
+
+        // Assuming that the Errors property in OperationResult can be deserialized to GraphQLError[]
+        GraphQL.GraphQLError[]? errors = JsonConvert.DeserializeObject<GraphQL.GraphQLError[]>(operationResult.Errors.GetRawText());
+
+        // Assuming that the Extensions property in OperationResult can be deserialized to Map
+
+        return new GraphQLResponse<T>
+        {
+            Data = data,
+            Errors = errors,
+        };
+    }
 
 }

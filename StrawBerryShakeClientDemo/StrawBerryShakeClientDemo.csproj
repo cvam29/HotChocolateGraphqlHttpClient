@@ -4,6 +4,9 @@
     <AzureFunctionsVersion>v4</AzureFunctionsVersion>
   </PropertyGroup>
   <ItemGroup>
+	  <PackageReference Include="GraphQL.Client" Version="5.1.0" />
+	  <PackageReference Include="GraphQL.Client.Abstractions" Version="5.1.0" />
+	  <PackageReference Include="GraphQL.Client.Serializer.Newtonsoft" Version="5.1.0" />
     <PackageReference Include="HotChocolate.Transport.Abstractions" Version="13.9.0" />
     <PackageReference Include="HotChocolate.Transport.Http" Version="13.9.0" />
     <PackageReference Include="Microsoft.Azure.Functions.Extensions" Version="1.1.0" />
