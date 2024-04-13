@@ -30,5 +30,6 @@ This is a sample Azure Function project designed to address timeout issues and p
     cd azure-function-graphql
     func start
     ```
-
+## Screenshots
+![AzureFunction](https://github.com/cvam29/HotChocolateGraphqlHttpClient/assets/70092511/af353617-ea38-4fce-a815-93a380949f73)
 
